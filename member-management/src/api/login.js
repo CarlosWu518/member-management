@@ -17,3 +17,16 @@ export function getUserInfo(token) {
         url: `/user/info/${token}`,
     })
 }
+
+
+export function logout(token) {
+    return request({
+        method: 'post',
+        data() {
+            return {
+                token
+            }
+        },
+        url: `/user/logout`,
+    })
+}
