@@ -38,7 +38,7 @@
         <el-button @click="resetForm('searchForm')">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="list" height="380" border style="width: 100%">
+    <el-table :data="list" height="580" border style="width: 100%">
       <el-table-column type="index" label="序号" width="60"> </el-table-column>
       <el-table-column prop="cardNum" label="会员卡号"> </el-table-column>
       <el-table-column prop="name" label="会员姓名"> </el-table-column>
@@ -129,7 +129,14 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addData('pojoForm')">确 定</el-button>
+        <!-- <el-button type="primary" @click="addData('pojoForm')">确 定</el-button> -->
+        <el-button
+          type="primary"
+          @click="
+            pojo.id === null ? addData('pojoForm') : updateData('pojoForm')
+          "
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -161,6 +168,7 @@ export default {
       payTypeOptions,
       dialogFormVisible: false,
       pojo: {
+        id: null,
         cardNum: "",
         name: "",
         payType: "",
@@ -194,11 +202,71 @@ export default {
           console.log(resp);
         });
     },
+    //编辑
     handleEdit(id) {
       console.log("修改", id);
+      this.handleAdd();
+      memberApi.getById(id).then((response) => {
+        const resp = response.data;
+        if (resp.flag) {
+          this.pojo = resp.data;
+        }
+      });
     },
+    updateData(formName) {
+      console.log(`updateData`);
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          //提交更新
+          memberApi.update(this.pojo).then((response) => {
+            const resp = response.data;
+            if (resp.flag) {
+              //刷新列表
+              this.fetchData();
+              this.dialogFormVisible = false;
+            } else {
+              this.$message({
+                message: resp.message,
+                type: "warning",
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    //删除会员
     handleDelete(id) {
       console.log("删除", id);
+      this.$confirm("确定删除这条记录?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          memberApi.deleteById(id).then((response) => {
+            const resp = response.data;
+            if (resp.flag) {
+              this.fetchData();
+              this.$message({
+                type: "success",
+                message: resp.message,
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: resp.message,
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: resp.message,
+          });
+        });
     },
     handleSizeChange(val) {
       this.pageSize = val;

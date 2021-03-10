@@ -1,19 +1,15 @@
 import request from '@/utils/request'
 
-
 export default {
-    //获取会员列表数据
     getList() {
         return request({
-            url: '/member/list',
+            url: '/supplier/list',
             method: 'get'
         })
     },
-    //分页搜索方法
-    //page当前页码，size每页查询条数,searchMap条件查询的条件值
     search(page, size, searchMap) {
         return request({
-            url: `/member/list/search/${page}/${size}`,
+            url: `/supplier/list/search/${page}/${size}`,
             method: 'post',
             data: searchMap
         })
@@ -21,31 +17,30 @@ export default {
     //新增会员
     add(pojo) {
         return request({
-            url: `/member`,
+            url: `/supplier`,
             method: 'post',
             data: pojo
         })
     },
-    //根据id查询会员信息
+    //getById
     getById(id) {
         return request({
-            url: `/member/${id}`,
+            url: `/supplier/${id}`,
             method: 'get'
         })
     },
-    //跟新会员数据
     update(pojo) {
         return request({
-            url: `/member/${pojo.id}`,
+            url: `/supplier/${pojo.id}`,
             method: 'put',
             data: pojo
         })
     },
-    //根据id删除会员
     deleteById(id) {
         return request({
-            url: `/member/${id}`,
+            url: `/supplier/${id}`,
             method: 'delete'
         })
     }
+
 }
