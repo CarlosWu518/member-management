@@ -62,6 +62,7 @@ export default {
         // console.log(valid)
         if (valid) {
           // 提交表单给后台进行验证是否正确
+          /** 
           login(this.form.username, this.form.password).then((response) => {
             const resp = response.data;
             console.log(resp, resp.flag, resp.data.token, resp.message);
@@ -96,6 +97,21 @@ export default {
               });
             }
           });
+        */
+          const pro = this.$store
+            .dispatch("Login", this.form)
+            .then((response) => {
+              if (response.flag) {
+                this.$router.push("/");
+              } else {
+                this.$message({
+                  message: response.message,
+                  type: "waring",
+                });
+              }
+            })
+            .catch((error) => {});
+          console.log("pro", pro);
         } else {
           console.log("验证失败");
           return false;
